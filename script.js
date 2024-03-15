@@ -1,7 +1,14 @@
-const board = ['', '', '', '', '' , '', '', '', '']
+const board = []
+const allCells = document.querySelectorAll('.cell')
+let gameWon = false
+
+// TODO: napravit da se ćelije disableaju
+
+allCells.forEach((oneCell) => {
+    board.push(oneCell)
+})
 
 function game() {
-    const allCells = document.querySelectorAll('.cell')
     let player
     let counter = 0
 
@@ -19,16 +26,42 @@ function game() {
         cell.addEventListener('click', () => {
             playersTurn()
             cell.innerHTML = `${player}`
-            let clickedCell = document.getElementById(`cell-${index}`)
-
-            if (clickedCell.innerHTML === 'X') {
-                console.log('X wins')
-            }
+            checkWin(board)
         })
     })
-
 }
 game()
+
+function checkWin(cells) {
+    while(true) {
+    const winCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+        [0, 4, 8], [2, 4, 6]              
+    ]
+
+    for (const combo of winCombinations) {
+        const [a, b, c] = combo
+        if (cells[a].innerHTML && cells[a].innerHTML === cells[b].innerHTML && cells[a].innerHTML === cells[c].innerHTML) {
+            document.querySelector('#status-message').innerHTML = `Winner is ${cells[a].innerHTML}!`
+            disableCells()
+        }
+    }
+    return null
+}}
+
+function checkGameWon() {
+    if (document.querySelector('#status-message').innerHTML === 'Winner is X!' || document.querySelector('#status-message').innerHTML === 'Winner is O!') {
+        gameWon = true
+        disableCells()
+    } 
+}
+
+function disableCells() {
+    allCells.forEach((cell) => {
+        cell.removeEventListener('click', checkGameWon)
+    })
+}
 
 function resetGame() {
     allCells.forEach((cell) => {
@@ -39,35 +72,3 @@ function resetGame() {
 document.querySelector('#reset-button').addEventListener('click', () => {
     resetGame()
 })
-
-/*
-function checkWin(cells) {
-    // Define winning combinations
-    const winCombinations = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Horizontal lines
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Vertical lines
-        [0, 4, 8], [2, 4, 6]              // Diagonal lines
-    ];
-
-    // Check if any winning combination is present
-    for (const combo of winCombinations) {
-        const [a, b, c] = combo;
-        if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
-            return { winner: cells[a], cells: combo }; // Return the winning player symbol and the winning combination
-        }
-    }
-    return null; // No winning combination found
-}
-
-// Example usage:
-const cells = ['X', 'O', 'X',
-               ' ', 'X', 'O',
-               'O', ' ', 'X'];
-
-const winResult = checkWin(cells);
-if (winResult) {
-    console.log(`Player ${winResult.winner} wins with cells: ${winResult.cells}`);
-} else {
-    console.log("No winner yet.");
-}
-*/
