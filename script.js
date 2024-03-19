@@ -1,8 +1,5 @@
 const board = []
 const allCells = document.querySelectorAll('.cell')
-let gameWon = false
-
-// TODO: napravit da se ćelije disableaju
 
 allCells.forEach((oneCell) => {
     board.push(oneCell)
@@ -44,24 +41,10 @@ function checkWin(cells) {
         const [a, b, c] = combo
         if (cells[a].innerHTML && cells[a].innerHTML === cells[b].innerHTML && cells[a].innerHTML === cells[c].innerHTML) {
             document.querySelector('#status-message').innerHTML = `Winner is ${cells[a].innerHTML}!`
-            disableCells()
         }
     }
     return null
 }}
-
-function checkGameWon() {
-    if (document.querySelector('#status-message').innerHTML === 'Winner is X!' || document.querySelector('#status-message').innerHTML === 'Winner is O!') {
-        gameWon = true
-        disableCells()
-    } 
-}
-
-function disableCells() {
-    allCells.forEach((cell) => {
-        cell.removeEventListener('click', checkGameWon)
-    })
-}
 
 function resetGame() {
     allCells.forEach((cell) => {
@@ -69,6 +52,12 @@ function resetGame() {
     })
 }
 
+function resetStatusMessage() {
+    let statusMessage = document.querySelector('#status-message') 
+    statusMessage.innerHTML = ''
+}
+
 document.querySelector('#reset-button').addEventListener('click', () => {
     resetGame()
+    resetStatusMessage()
 })
